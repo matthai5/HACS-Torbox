@@ -44,6 +44,8 @@ async def async_setup_entry(
 class TorboxSensorBase(CoordinatorEntity[TorboxDataUpdateCoordinator], SensorEntity):
     """Base class for Torbox sensors."""
 
+    _attr_has_entity_name = True
+
     def __init__(self, coordinator: TorboxDataUpdateCoordinator) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
@@ -78,6 +80,12 @@ class TorboxPlanSensor(TorboxSensorBase):
         # Mapping based on common Torbox API responses, fallback to str(plan_id)
         plan_map = {0: "Free", 1: "Essential", 2: "Pro", 3: "Standard"}
         return plan_map.get(plan_id, f"Plan {plan_id}")
+
+    @property
+    def extra_state_attributes(self) -> Dict[str, Any]:
+        """Return the user properties as extra state attributes."""
+        return self.coordinator.data.get("user", {})
+
 
 
 class TorboxTotalTorrentsSensor(TorboxSensorBase):
