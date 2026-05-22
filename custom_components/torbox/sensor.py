@@ -204,8 +204,9 @@ class TorboxServerSensor(TorboxSensorBase):
         """Return the state of the sensor."""
         server_val = self.coordinator.data.get("user", {}).get("server")
         if server_val is None or server_val == "null":
-            return None
+            return "Default"
         return str(server_val)
+
 
 
 class TorboxTotalUsenetSensor(TorboxSensorBase):
