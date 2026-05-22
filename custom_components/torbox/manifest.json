@@ -1,0 +1,12 @@
+{
+  "domain": "torbox",
+  "name": "Torbox",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/your-username/torbox-ha",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/your-username/torbox-ha/issues",
+  "requirements": [],
+  "version": "1.0.0"
+}

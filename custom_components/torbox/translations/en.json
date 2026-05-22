@@ -1,0 +1,33 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "Enter your Torbox API Key to authenticate.",
+        "data": {
+          "api_key": "API Key"
+        }
+      }
+    },
+    "error": {
+      "auth": "Authentication failed. Please check your API Key.",
+      "cannot_connect": "Failed to connect to the Torbox API.",
+      "unknown": "An unknown error occurred."
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "plan": {
+        "name": "Plan"
+      },
+      "total_torrents": {
+        "name": "Total Torrents"
+      },
+      "active_downloads": {
+        "name": "Active Downloads"
+      }
+    }
+  }
+}
