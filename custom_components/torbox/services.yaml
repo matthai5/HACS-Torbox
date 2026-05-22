@@ -1,0 +1,139 @@
+add_torrent:
+  name: Add Torrent
+  description: Add a torrent to Torbox using a magnet link, a torrent file URL, or a local file path.
+  fields:
+    magnet:
+      name: Magnet Link
+      description: The magnet link to add.
+      required: false
+      example: "magnet:?xt=urn:btih:..."
+      selector:
+        text:
+    torrent_url:
+      name: Torrent URL
+      description: The URL pointing to a torrent file.
+      required: false
+      example: "https://example.com/file.torrent"
+      selector:
+        text:
+    file_path:
+      name: Local File Path
+      description: Path to a local torrent file on the Home Assistant system.
+      required: false
+      example: "/config/downloads/my.torrent"
+      selector:
+        text:
+
+control_torrent:
+  name: Control Torrent
+  description: Pause, resume, delete, or reannounce a torrent on Torbox.
+  fields:
+    torrent_id:
+      name: Torrent ID
+      description: The ID of the torrent to control.
+      required: true
+      example: "123"
+      selector:
+        text:
+    operation:
+      name: Operation
+      description: The action to perform.
+      required: true
+      default: pause
+      selector:
+        select:
+          options:
+            - label: Pause
+              value: pause
+            - label: Resume
+              value: resume
+            - label: Delete
+              value: delete
+            - label: Reannounce
+              value: reannounce
+
+add_usenet:
+  name: Add Usenet
+  description: Add a Usenet download using a link, an NZB file URL, or a local NZB file path.
+  fields:
+    link:
+      name: Link / URL
+      description: The direct link/URL to NZB.
+      required: false
+      example: "https://example.com/file.nzb"
+      selector:
+        text:
+    file_path:
+      name: Local File Path
+      description: Path to a local NZB file on the Home Assistant system.
+      required: false
+      example: "/config/downloads/my.nzb"
+      selector:
+        text:
+
+control_usenet:
+  name: Control Usenet
+  description: Pause, resume, or delete a Usenet download on Torbox.
+  fields:
+    usenet_id:
+      name: Usenet ID
+      description: The ID of the Usenet download to control.
+      required: true
+      example: "123"
+      selector:
+        text:
+    operation:
+      name: Operation
+      description: The action to perform.
+      required: true
+      default: delete
+      selector:
+        select:
+          options:
+            - label: Pause
+              value: pause
+            - label: Resume
+              value: resume
+            - label: Delete
+              value: delete
+
+add_webdl:
+  name: Add Web Download
+  description: Add a web/debrid download to Torbox using a URL.
+  fields:
+    url:
+      name: URL
+      description: The URL to download.
+      required: true
+      example: "https://example.com/file.zip"
+      selector:
+        text:
+    name:
+      name: Name
+      description: Custom name for the download.
+      required: false
+      example: "my_download"
+      selector:
+        text:
+
+control_webdl:
+  name: Control Web Download
+  description: Delete a web download on Torbox.
+  fields:
+    webdl_id:
+      name: Web Download ID
+      description: The ID of the web download to control.
+      required: true
+      example: "123"
+      selector:
+        text:
+    operation:
+      name: Operation
+      description: The action to perform.
+      required: true
+      default: delete
+      selector:
+        select:
+          options:
+            - label: Delete
+              value: delete

@@ -27,6 +27,30 @@
       },
       "active_downloads": {
         "name": "Active Downloads"
+      },
+      "usage_30_day": {
+        "name": "30 Day Usage"
+      },
+      "premium_expires_at": {
+        "name": "Premium Expires At"
+      },
+      "cooldown_until": {
+        "name": "Cooldown Until"
+      },
+      "server": {
+        "name": "Server"
+      },
+      "total_usenet": {
+        "name": "Total Usenet Downloads"
+      },
+      "active_usenet": {
+        "name": "Active Usenet Downloads"
+      },
+      "total_webdl": {
+        "name": "Total Web Downloads"
+      },
+      "active_webdl": {
+        "name": "Active Web Downloads"
       }
     }
   }

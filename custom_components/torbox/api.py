@@ -4,7 +4,19 @@ import logging
 import aiohttp
 from typing import Any, Dict
 
-from .const import API_BASE_URL, ENDPOINT_USER_ME, ENDPOINT_TORRENTS_MYLIST
+from .const import (
+    API_BASE_URL,
+    ENDPOINT_USER_ME,
+    ENDPOINT_TORRENTS_MYLIST,
+    ENDPOINT_TORRENTS_CREATE,
+    ENDPOINT_TORRENTS_CONTROL,
+    ENDPOINT_USENET_MYLIST,
+    ENDPOINT_USENET_CREATE,
+    ENDPOINT_USENET_CONTROL,
+    ENDPOINT_WEBDL_MYLIST,
+    ENDPOINT_WEBDL_CREATE,
+    ENDPOINT_WEBDL_CONTROL,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -52,3 +64,95 @@ class TorboxApiClient:
     async def get_torrents(self) -> Dict[str, Any]:
         """Get list of torrents."""
         return await self._request("GET", ENDPOINT_TORRENTS_MYLIST)
+
+    async def get_usenet(self) -> Dict[str, Any]:
+        """Get list of Usenet downloads."""
+        return await self._request("GET", ENDPOINT_USENET_MYLIST)
+
+    async def get_web_downloads(self) -> Dict[str, Any]:
+        """Get list of web downloads."""
+        return await self._request("GET", ENDPOINT_WEBDL_MYLIST)
+
+    async def add_torrent(
+        self,
+        magnet: str = None,
+        file_name: str = None,
+        file_bytes: bytes = None,
+    ) -> Dict[str, Any]:
+        """Add a torrent via magnet link or file."""
+        data = aiohttp.FormData()
+        if magnet:
+            data.add_field("magnet", magnet)
+        elif file_bytes:
+            data.add_field(
+                "file",
+                file_bytes,
+                filename=file_name or "torrent.torrent",
+                content_type="application/x-bittorrent",
+            )
+        else:
+            raise TorboxApiClientError("Either magnet link or torrent file must be provided")
+
+        data.add_field("seed", "1")
+        data.add_field("allow_zip", "true")
+
+        return await self._request("POST", ENDPOINT_TORRENTS_CREATE, data=data)
+
+    async def control_torrent(self, torrent_id: Any, operation: str) -> Dict[str, Any]:
+        """Control an existing torrent."""
+        payload = {
+            "torrent_id": torrent_id,
+            "operation": operation,
+        }
+        return await self._request("POST", ENDPOINT_TORRENTS_CONTROL, json=payload)
+
+    async def add_usenet(
+        self,
+        link: str = None,
+        file_name: str = None,
+        file_bytes: bytes = None,
+    ) -> Dict[str, Any]:
+        """Add a Usenet download via link or NZB file."""
+        if file_bytes:
+            data = aiohttp.FormData()
+            data.add_field(
+                "file",
+                file_bytes,
+                filename=file_name or "usenet.nzb",
+                content_type="application/x-nzb",
+            )
+            # Default post_processing to repair, unpack and delete (-1 or 3)
+            data.add_field("post_processing", "3")
+            return await self._request("POST", ENDPOINT_USENET_CREATE, data=data)
+        
+        if link:
+            payload = {
+                "link": link,
+                "post_processing": 3,
+            }
+            return await self._request("POST", ENDPOINT_USENET_CREATE, json=payload)
+
+        raise TorboxApiClientError("Either link or NZB file must be provided")
+
+    async def control_usenet(self, usenet_id: Any, operation: str) -> Dict[str, Any]:
+        """Control an existing Usenet download."""
+        payload = {
+            "usenet_id": usenet_id,
+            "operation": operation,
+        }
+        return await self._request("POST", ENDPOINT_USENET_CONTROL, json=payload)
+
+    async def add_webdl(self, url: str, name: str = None) -> Dict[str, Any]:
+        """Add a web download."""
+        payload = {"url": url}
+        if name:
+            payload["name"] = name
+        return await self._request("POST", ENDPOINT_WEBDL_CREATE, json=payload)
+
+    async def control_webdl(self, webdl_id: Any, operation: str) -> Dict[str, Any]:
+        """Control an existing web download."""
+        payload = {
+            "webdl_id": webdl_id,
+            "operation": operation,
+        }
+        return await self._request("POST", ENDPOINT_WEBDL_CONTROL, json=payload)

@@ -6,6 +6,7 @@ This custom integration integrates [Torbox](https://torbox.app) into Home Assist
 - Sensor for your current Torbox plan.
 - Sensor for total number of torrents in your account.
 - Sensor for active torrent downloads.
+- Sensor for your 30-day usage statistics.
 
 ## Installation
 
