@@ -4,6 +4,7 @@ import logging
 from datetime import timedelta
 
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import TorboxApiClient, TorboxApiClientAuthenticationError, TorboxApiClientError
@@ -29,7 +30,7 @@ class TorboxDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             user_data = await self.client.get_user_data()
         except TorboxApiClientAuthenticationError as err:
-            raise UpdateFailed(f"Authentication failed: {err}") from err
+            raise ConfigEntryAuthFailed("Torbox API key is invalid") from err
         except TorboxApiClientError as err:
             raise UpdateFailed(f"Error communicating with API: {err}") from err
 
@@ -39,6 +40,8 @@ class TorboxDataUpdateCoordinator(DataUpdateCoordinator):
             torrents = torrents_data.get("data", [])
             if not isinstance(torrents, list):
                 torrents = []
+        except TorboxApiClientAuthenticationError as err:
+            raise ConfigEntryAuthFailed("Torbox API key is invalid") from err
         except Exception as err:
             _LOGGER.warning("Failed to fetch Torrents list: %s", err)
 
@@ -48,6 +51,8 @@ class TorboxDataUpdateCoordinator(DataUpdateCoordinator):
             usenet = usenet_data.get("data", [])
             if not isinstance(usenet, list):
                 usenet = []
+        except TorboxApiClientAuthenticationError as err:
+            raise ConfigEntryAuthFailed("Torbox API key is invalid") from err
         except Exception as err:
             _LOGGER.warning("Failed to fetch Usenet list: %s", err)
 
@@ -57,6 +62,8 @@ class TorboxDataUpdateCoordinator(DataUpdateCoordinator):
             webdl = webdl_data.get("data", [])
             if not isinstance(webdl, list):
                 webdl = []
+        except TorboxApiClientAuthenticationError as err:
+            raise ConfigEntryAuthFailed("Torbox API key is invalid") from err
         except Exception as err:
             _LOGGER.warning("Failed to fetch WebDL list: %s", err)
 

@@ -34,7 +34,7 @@ class TorboxApiClient:
 
     def __init__(self, api_key: str, session: aiohttp.ClientSession) -> None:
         """Initialize the API client."""
-        self._api_key = api_key
+        self._api_key = api_key.strip()
         self._session = session
 
     async def _request(self, method: str, endpoint: str, **kwargs: Any) -> Dict[str, Any]:
@@ -51,7 +51,19 @@ class TorboxApiClient:
                         "Invalid credentials for Torbox API"
                     )
                 response.raise_for_status()
-                return await response.json()
+                result = await response.json()
+                if isinstance(result, dict) and result.get("success") is False:
+                    error = result.get("error")
+                    if error in ("BAD_TOKEN", "AUTH_ERROR", "INVALID_API_KEY", "UNAUTHORIZED"):
+                        raise TorboxApiClientAuthenticationError(
+                            "Invalid credentials for Torbox API"
+                        )
+                    raise TorboxApiClientError("Torbox API reported an unsuccessful request")
+                return result
+        except TorboxApiClientError:
+            raise
+        except TimeoutError as err:
+            raise TorboxApiClientCommunicationError("Torbox API request timed out") from err
         except aiohttp.ClientError as err:
             raise TorboxApiClientCommunicationError(f"Error communicating with Torbox API: {err}") from err
         except Exception as err:
